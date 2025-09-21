@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}智能推荐 - {{ super() }}{% endblock %}
+
+{% block content %}
+<h2>智能推荐</h2>
+<p>根据您的偏好和行为，我们为您推荐以下房源：</p>
+
+{% if properties %}
+<div class="row">
+    {% for property in properties %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ property.title[:30] }}{% if property.title|length > 30 %}...{% endif %}</h5>
+                <p class="card-text">{{ property.description[:100] }}{% if property.description|length > 100 %}...{% endif %}</p>
+                <p class="card-text">
+                    <strong>价格:</strong> <span class="price-tag">¥{{ "{:,.0f}".format(property.price) }}</span><br>
+                    <strong>城市:</strong> {{ property.city }}<br>
+                    <strong>卧室:</strong> {{ property.bedrooms }} | 
+                    <strong>面积:</strong> {{ property.square_feet }} 平方英尺
+                </p>
+                <a href="{{ url_for('property.view_property', property_id=property.id) }}" class="btn btn-primary">查看详情</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center">
+    <p>暂无推荐房源。</p>
+</div>
+{% endif %}
+{% endblock %}

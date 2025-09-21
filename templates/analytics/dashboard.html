@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}数据分析 - {{ super() }}{% endblock %}
+
+{% block head %}
+{{ super() }}
+<!-- ECharts -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<h2>数据分析仪表板</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span class="stat-number">{{ total_properties }}</span>
+            <span class="stat-label">房源总数</span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span class="stat-number">{{ total_users }}</span>
+            <span class="stat-label">用户总数</span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span class="stat-number">{{ total_recommendations }}</span>
+            <span class="stat-label">推荐总数</span>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>各城市房源分布</h5>
+            </div>
+            <div class="card-body">
+                <div id="cityChart" class="chart-container"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 基于准备好的dom，初始化echarts实例
+var myChart = echarts.init(document.getElementById('cityChart'));
+
+// 指定图表的配置项和数据
+var option = {
+    title: {
+        text: '各城市房源分布'
+    },
+    tooltip: {},
+    legend: {
+        data:['房源数量']
+    },
+    xAxis: {
+        type: 'category',
+        data: [
+            {% for item in properties_by_city %}
+                '{{ item[0] }}',
+            {% endfor %}
+        ]
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [{
+        name: '房源数量',
+        type: 'bar',
+        data: [
+            {% for item in properties_by_city %}
+                {{ item[1] }},
+            {% endfor %}
+        ],
+        itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#83bff6' },
+                { offset: 0.5, color: '#188df0' },
+                { offset: 1, color: '#188df0' }
+            ])
+        }
+    }]
+};
+
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option);
+
+// 窗口大小改变时重置图表大小
+window.addEventListener('resize', function() {
+    myChart.resize();
+});
+</script>
+{% endblock %}

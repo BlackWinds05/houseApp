@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}添加房源 - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">添加房源</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">标题</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">描述</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="address" class="form-label">地址</label>
+                                <input type="text" class="form-control" id="address" name="address" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="city" class="form-label">城市</label>
+                                <input type="text" class="form-control" id="city" name="city" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="state" class="form-label">州/省</label>
+                                <input type="text" class="form-control" id="state" name="state" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="zipcode" class="form-label">邮编</label>
+                                <input type="text" class="form-control" id="zipcode" name="zipcode" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="price" class="form-label">价格 (¥)</label>
+                                <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="property_type" class="form-label">房源类型</label>
+                                <select class="form-control" id="property_type" name="property_type" required>
+                                    <option value="apartment">公寓</option>
+                                    <option value="house">住宅</option>
+                                    <option value="condo">公寓式酒店</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="bedrooms" class="form-label">卧室数量</label>
+                                <input type="number" class="form-control" id="bedrooms" name="bedrooms" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="bathrooms" class="form-label">浴室数量</label>
+                                <input type="number" class="form-control" id="bathrooms" name="bathrooms" min="0" step="0.5" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="square_feet" class="form-label">面积 (平方英尺)</label>
+                                <input type="number" class="form-control" id="square_feet" name="square_feet" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="year_built" class="form-label">建造年份</label>
+                                <input type="number" class="form-control" id="year_built" name="year_built" min="1800" max="{{ now().year }}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">添加房源</button>
+                    </div>
+                </form>
+                
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('property.list_properties') }}">返回房源列表</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

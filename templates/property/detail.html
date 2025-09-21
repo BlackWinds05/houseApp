@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}{{ property.title }} - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>{{ property.title }}</h2>
+        <p>{{ property.description }}</p>
+        
+        <h4>房源信息</h4>
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <th>价格</th>
+                    <td><span class="price-tag">¥{{ "{:,.0f}".format(property.price) }}</span></td>
+                </tr>
+                <tr>
+                    <th>地址</th>
+                    <td>{{ property.address }}, {{ property.city }}, {{ property.state }} {{ property.zipcode }}</td>
+                </tr>
+                <tr>
+                    <th>卧室</th>
+                    <td>{{ property.bedrooms }}</td>
+                </tr>
+                <tr>
+                    <th>浴室</th>
+                    <td>{{ property.bathrooms }}</td>
+                </tr>
+                <tr>
+                    <th>面积</th>
+                    <td>{{ property.square_feet }} 平方英尺</td>
+                </tr>
+                <tr>
+                    <th>房源类型</th>
+                    <td>{{ property.property_type }}</td>
+                </tr>
+                <tr>
+                    <th>建造年份</th>
+                    <td>{{ property.year_built or '未知' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5>操作</h5>
+                <a href="{{ url_for('property.view_property', property_id=property.id) }}" class="btn btn-info">查看完整信息</a>
+                <a href="{{ url_for('property.list_properties') }}" class="btn btn-secondary mt-2">返回列表</a>
+            </div>
+        </div>
+        
+        {% if session.get('user_id') and session.get('role') == 'admin' %}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5>管理操作</h5>
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('property.edit_property', property_id=property.id) }}" class="btn btn-warning">编辑</a>
+                <form method="POST" action="{{ url_for('property.delete_property', property_id=property.id) }}" class="d-inline" 
+                      onsubmit="return confirm('确定要删除这个房源吗？')">
+                    <button type="submit" class="btn btn-danger">删除</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

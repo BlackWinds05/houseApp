@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}房源列表 - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>房源列表</h2>
+    {% if session.get('user_id') and session.get('role') == 'admin' %}
+    <a href="{{ url_for('property.create_property') }}" class="btn btn-primary">添加房源</a>
+    {% endif %}
+</div>
+
+{% if house_infos.items %}
+<div class="row">
+    {% for property in properties %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ property.title[:30] }}{% if property.title|length > 30 %}...{% endif %}</h5>
+                <p class="card-text">{{ property.description[:100] }}{% if property.description|length > 100 %}...{% endif %}</p>
+                <p class="card-text">
+                    <strong>价格:</strong> <span class="price-tag">¥{{ "{:,.0f}".format(property.price) }}</span><br>
+                    <strong>城市:</strong> {{ property.city }}<br>
+                    <strong>卧室:</strong> {{ property.bedrooms }} | 
+                    <strong>面积:</strong> {{ property.square_feet }} 平方英尺
+                </p>
+                <a href="{{ url_for('property.view_property', property_id=property.id) }}" class="btn btn-primary">查看详情</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- 分页 -->
+{% if house_infos.pages > 1 %}
+<nav aria-label="房源分页">
+    <ul class="pagination justify-content-center">
+        {% if house_infos.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('property.list_properties', page=house_infos.prev_num) }}">上一页</a>
+        </li>
+        {% endif %}
+        
+        {% for page_num in house_infos.iter_pages() %}
+            {% if page_num %}
+                {% if page_num != house_infos.page %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('property.list_properties', page=page_num) }}">{{ page_num }}</a>
+                </li>
+                {% else %}
+                <li class="page-item active">
+                    <span class="page-link">{{ page_num }}</span>
+                </li>
+                {% endif %}
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">…</span>
+            </li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if house_infos.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('property.list_properties', page=house_infos.next_num) }}">下一页</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<div class="text-center">
+    <p>暂无房源信息。</p>
+</div>
+{% endif %}
+{% endblock %}

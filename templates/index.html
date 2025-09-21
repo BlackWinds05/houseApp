@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded">
+    <h1 class="display-4">欢迎使用房源推荐与管理系统</h1>
+    <p class="lead">本系统提供房源管理、智能推荐、数据分析等功能，帮助您更好地管理房源信息。</p>
+    <hr class="my-4">
+    <p>使用下面的链接开始操作</p>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">房源管理</h5>
+                    <p class="card-text">管理房源信息，包括添加、编辑和删除房源。</p>
+                    <a href="{{ url_for('property.list_properties') }}" class="btn btn-primary">查看房源</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">智能推荐</h5>
+                    <p class="card-text">基于您的偏好和行为，智能推荐合适的房源。</p>
+                    <a href="{{ url_for('recommend.recommend') }}" class="btn btn-primary">开始推荐</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">数据分析</h5>
+                    <p class="card-text">通过可视化图表展示房源和用户行为数据。</p>
+                    <a href="{{ url_for('analytics.dashboard') }}" class="btn btn-primary">查看分析</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-5">
+        <h2>最新房源</h2>
+        {% if properties %}
+        <div class="row">
+            {% for property in properties %}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ property.title[:30] }}{% if property.title|length > 30 %}...{% endif %}</h5>
+                        <p class="card-text">{{ property.description[:100] }}{% if property.description|length > 100 %}...{% endif %}</p>
+                        <p class="card-text">
+                            <strong>价格:</strong> <span class="price-tag">¥{{ "{:,.0f}".format(property.price) }}</span><br>
+                            <strong>城市:</strong> {{ property.city }}<br>
+                            <strong>卧室:</strong> {{ property.bedrooms }} | 
+                            <strong>面积:</strong> {{ property.square_feet }} 平方英尺
+                        </p>
+                        <a href="{{ url_for('property.view_property', property_id=property.id) }}" class="btn btn-primary">查看详情</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>暂无房源信息</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

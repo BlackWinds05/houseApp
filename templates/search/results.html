@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}房源搜索 - {{ super() }}{% endblock %}
+
+{% block content %}
+<h2>房源搜索</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('search.search') }}">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="keyword" class="form-label">关键词</label>
+                        <input type="text" class="form-control" id="keyword" name="keyword" value="{{ keyword or '' }}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="city" class="form-label">城市</label>
+                        <input type="text" class="form-control" id="city" name="city" value="{{ city or '' }}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="min_price" class="form-label">最低价格</label>
+                        <input type="number" class="form-control" id="min_price" name="min_price" value="{{ min_price or '' }}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="max_price" class="form-label">最高价格</label>
+                        <input type="number" class="form-control" id="max_price" name="max_price" value="{{ max_price or '' }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="bedrooms" class="form-label">卧室数量</label>
+                        <select class="form-control" id="bedrooms" name="bedrooms">
+                            <option value="">不限</option>
+                            <option value="1" {% if bedrooms == 1 %}selected{% endif %}>1间</option>
+                            <option value="2" {% if bedrooms == 2 %}selected{% endif %}>2间</option>
+                            <option value="3" {% if bedrooms == 3 %}selected{% endif %}>3间</option>
+                            <option value="4" {% if bedrooms == 4 %}selected{% endif %}>4间或以上</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">搜索</button>
+                        <a href="{{ url_for('search.search') }}" class="btn btn-secondary">重置</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if house_infos.items %}
+<div class="row">
+    {% for property in properties %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ property.title[:30] }}{% if property.title|length > 30 %}...{% endif %}</h5>
+                <p class="card-text">{{ property.description[:100] }}{% if property.description|length > 100 %}...{% endif %}</p>
+                <p class="card-text">
+                    <strong>价格:</strong> <span class="price-tag">¥{{ "{:,.0f}".format(property.price) }}</span><br>
+                    <strong>城市:</strong> {{ property.city }}<br>
+                    <strong>卧室:</strong> {{ property.bedrooms }} | 
+                    <strong>面积:</strong> {{ property.square_feet }} 平方英尺
+                </p>
+                <a href="{{ url_for('property.view_property', property_id=property.id) }}" class="btn btn-primary">查看详情</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- 分页 -->
+{% if house_infos.pages > 1 %}
+<nav aria-label="房源分页">
+    <ul class="pagination justify-content-center">
+        {% if house_infos.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('search.search', page=house_infos.prev_num, keyword=keyword, city=city, min_price=min_price, max_price=max_price, bedrooms=bedrooms) }}">上一页</a>
+        </li>
+        {% endif %}
+        
+        {% for page_num in house_infos.iter_pages() %}
+            {% if page_num %}
+                {% if page_num != house_infos.page %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('search.search', page=page_num, keyword=keyword, city=city, min_price=min_price, max_price=max_price, bedrooms=bedrooms) }}">{{ page_num }}</a>
+                </li>
+                {% else %}
+                <li class="page-item active">
+                    <span class="page-link">{{ page_num }}</span>
+                </li>
+                {% endif %}
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">…</span>
+            </li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if house_infos.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('search.search', page=house_infos.next_num, keyword=keyword, city=city, min_price=min_price, max_price=max_price, bedrooms=bedrooms) }}">下一页</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<div class="text-center">
+    <p>没有找到符合条件的房源。</p>
+</div>
+{% endif %}
+{% endblock %}

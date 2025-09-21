@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}{{ house_info.title }} - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>{{ house_info.title or '未命名房源' }}</h2>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>基本信息</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th>ID:</th>
+                                <td>{{ house_info.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>房源标题:</th>
+                                <td>{{ house_info.title or '无' }}</td>
+                            </tr>
+                            <tr>
+                                <th>房间布局:</th>
+                                <td>{{ house_info.rooms or '无' }}</td>
+                            </tr>
+                            <tr>
+                                <th>面积:</th>
+                                <td>{{ house_info.area or '无' }} 平方米</td>
+                            </tr>
+                            <tr>
+                                <th>价格:</th>
+                                <td>¥{{ "{:,.0f}".format(house_info.price or 0) }}</td>
+                            </tr>
+                            <tr>
+                                <th>朝向:</th>
+                                <td>{{ house_info.direction or '无' }}</td>
+                            </tr>
+                            <tr>
+                                <th>租赁类型:</th>
+                                <td>{{ house_info.rent_type or '无' }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th>区域:</th>
+                                <td>{{ house_info.region or '无' }}</td>
+                            </tr>
+                            <tr>
+                                <th>片区:</th>
+                                <td>{{ house_info.block or '无' }}</td>
+                            </tr>
+                            <tr>
+                                <th>地址:</th>
+                                <td>{{ house_info.address or '无' }}</td>
+                            </tr>
+                            <tr>
+                                <th>房东:</th>
+                                <td>{{ house_info.landlord or '无' }}</td>
+                            </tr>
+                            <tr>
+                                <th>联系电话:</th>
+                                <td>{{ house_info.phone_num or '无' }}</td>
+                            </tr>
+                            <tr>
+                                <th>房源编号:</th>
+                                <td>{{ house_info.house_num or '无' }}</td>
+                            </tr>
+                            <tr>
+                                <th>浏览量:</th>
+                                <td>{{ house_info.page_views or 0 }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>详细描述</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>设施</h6>
+                        <p>{{ house_info.facilities or '暂无信息' }}</p>
+                        
+                        <h6>亮点</h6>
+                        <p>{{ house_info.highlights or '暂无信息' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>匹配信息</h6>
+                        <p>{{ house_info.matching or '暂无信息' }}</p>
+                        
+                        <h6>出行信息</h6>
+                        <p>{{ house_info.travel or '暂无信息' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>交通信息</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ house_info.traffic or '暂无交通信息' }}</p>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-between">
+            <a href="{{ url_for('property.list_properties') }}" class="btn btn-secondary">返回列表</a>
+            {% if session.get('user_id') and session.get('role') == 'admin' %}
+            <div>
+                <a href="#" class="btn btn-warning">编辑</a>
+                <form method="POST" action="#" class="d-inline" 
+                      onsubmit="return confirm('确定要删除这个房源吗？')">
+                    <button type="submit" class="btn btn-danger">删除</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
